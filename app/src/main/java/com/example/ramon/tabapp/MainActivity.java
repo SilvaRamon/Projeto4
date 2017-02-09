@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                anexar_foto.setOnClickListener(new View.OnClickListener() {
+                /*anexar_foto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                         camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                         startActivityForResult(camera_intent, 1);
                     }
-                });
+                });*/
 
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private File getFile(){
+        /*private File getFile(){
             File folder = new File("sdcard/appPol");
 
             if(!folder.exists()){
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             String path = "sdcard/appPol/imagem.jpg";
-        }
+        }*/
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
