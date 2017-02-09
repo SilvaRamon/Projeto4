@@ -1,6 +1,9 @@
 package com.example.ramon.tabapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,8 +19,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +61,12 @@ public class MainActivity extends AppCompatActivity {
         private Button enviar;
         private Button anexar_foto;
 
+        private DatabaseReference db;
+        private FirebaseHelper helper;
+
         private Denuncia denuncia;
+
+        private StorageReference mStorage;
 
         public PlaceholderFragment() {
         }
@@ -64,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
+
             return fragment;
         }
 
@@ -87,38 +100,35 @@ public class MainActivity extends AppCompatActivity {
 
                 anexar_foto = (Button) rootView.findViewById(R.id.id_foto);
 
+                db = FirebaseDatabase.getInstance().getReference();
+                helper = new FirebaseHelper(db);
+
+                mStorage = FirebaseStorage.getInstance().getReference();
+
                 enviar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DatabaseReference db;
-                        FirebaseHelper helper;
+                    denuncia = new Denuncia();
 
-                        db = FirebaseDatabase.getInstance().getReference();
-                        helper = new FirebaseHelper(db);
+                    denuncia.setEndereço(endereco.getText().toString());
+                    denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
+                    denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
 
-                        denuncia = new Denuncia();
+                    helper.Save(denuncia);
 
-                        denuncia.setEndereço(endereco.getText().toString());
-                        denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
-                        denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
-
-                        helper.Save(denuncia);
-
-                        endereco.setText("");
-                        detalhesDaOcorrencia.setText("");
+                    endereco.setText("");
+                    detalhesDaOcorrencia.setText("");
                     }
                 });
 
-                /*anexar_foto.setOnClickListener(new View.OnClickListener() {
+                anexar_foto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        File file = getFile();
 
-                        camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                         startActivityForResult(camera_intent, 1);
                     }
-                });*/
+                });
 
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -148,12 +158,34 @@ public class MainActivity extends AppCompatActivity {
             File imagem = new File(folder, "imagem.jpg");
 
             return imagem;
-        }
+        }*/
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            String path = "sdcard/appPol/imagem.jpg";
-        }*/
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == 1 && resultCode == RESULT_OK) {
+                Uri uri = data.getData();
+
+                StorageReference caminho = mStorage.child("Fotos").child(uri.getLastPathSegment());
+
+                caminho.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        denuncia = new Denuncia();
+
+                        denuncia.setEndereço(endereco.getText().toString());
+                        denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
+                        denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
+
+                        helper.Save(denuncia);
+
+                        endereco.setText("");
+                        detalhesDaOcorrencia.setText("");
+                    }
+                });
+            }
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
