@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "180284440077",
+    "firebase_url": "https://projeto3-c93f2.firebaseio.com",
+    "project_id": "projeto3-c93f2",
+    "storage_bucket": "projeto3-c93f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180284440077:android:39434f4f69935736",
+        "android_client_info": {
+          "package_name": "com.example.ramon.tabapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "180284440077-eqnn654so9pntqq06umuc63ru98hd32i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD74FSHPks4vQGCiy0P3wPx175QilOFk_o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "180284440077-eqnn654so9pntqq06umuc63ru98hd32i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
