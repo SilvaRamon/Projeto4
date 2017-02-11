@@ -1,5 +1,7 @@
 package com.example.ramon.tabapp;
 
+import android.net.Uri;
+
 /**
  * Created by Pichau on 07/02/2017.
  */
@@ -8,6 +10,7 @@ public class Denuncia {
     private String tipoDeOcorrencia;
     private String endereço;
     private String detalhesDaOcorrencia;
+    private Uri imagemURL;
 
     public Denuncia() {
     }
@@ -34,5 +37,13 @@ public class Denuncia {
 
     public void setDetalhesDaOcorrencia(String detalhesDaOcorrencia) {
         this.detalhesDaOcorrencia = detalhesDaOcorrencia;
+    }
+
+    public Uri getImagemURL() {
+        return imagemURL;
+    }
+
+    public void setImagemURL(Uri imagemURL) {
+        this.imagemURL = imagemURL;
     }
 }

@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
                         startActivityForResult(camera_intent, 1);
                     }
                 });
@@ -142,23 +141,9 @@ public class MainActivity extends AppCompatActivity {
                 return rootView;
             } else{
                 View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                /*TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-                textView.setText("Deu ruim");*/
                 return rootView;
             }
         }
-
-        /*private File getFile(){
-            File folder = new File("sdcard/appPol");
-
-            if(!folder.exists()){
-                folder.mkdir();
-            }
-
-            File imagem = new File(folder, "imagem.jpg");
-
-            return imagem;
-        }*/
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                         denuncia.setEndereço(endereco.getText().toString());
                         denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
                         denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
+                        denuncia.setImagemURL(taskSnapshot.getDownloadUrl());
 
                         helper.Save(denuncia);
 
