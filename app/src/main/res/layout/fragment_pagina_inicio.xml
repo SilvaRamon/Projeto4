@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -12,37 +13,47 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <!--<FrameLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:background="#0073ff">
-        </FrameLayout>
+        </FrameLayout>-->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="163dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:srcCompat="@drawable/batalhao_app"
+            android:id="@+id/imageView"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/tipo_denuncia"
-            android:textStyle="bold"
-            android:id="@+id/textView2" />
+            android:id="@+id/textView2"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spinner_denuncia"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:spinnerMode="dropdown" />
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:spinnerMode="dialog"
+            android:theme="@style/rcsTheme"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/endereco"
-            android:textStyle="bold"
-            android:id="@+id/textView3" />
+            android:id="@+id/textView3"
+            android:textSize="18sp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -52,23 +63,26 @@
             android:id="@+id/endereco"
             android:layout_gravity="center_horizontal"
             android:inputType="text"
-            android:hint="@string/local_da_ocorr_ncia" />
+            android:hint="@string/local_da_ocorr_ncia"
+            android:theme="@style/rcsTheme" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/detalhes"
-            android:textStyle="bold"
-            android:id="@+id/textView4" />
+            android:id="@+id/textView4"
+            android:textSize="18sp" />
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
             android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:id="@+id/detalhes"
-            android:hint="@string/insira_aqui_os_detalhes_da_ocorr_ncia"
-            android:inputType="text" />
+            android:hint="@string/detalhes_desc"
+            android:theme="@style/rcsTheme"/>
 
         <Button
             android:text="@string/anexar_foto"

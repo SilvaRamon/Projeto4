@@ -1,7 +1,5 @@
 package com.example.ramon.tabapp;
 
-import android.net.Uri;
-
 /**
  * Created by Pichau on 07/02/2017.
  */
@@ -10,7 +8,9 @@ public class Denuncia {
     private String tipoDeOcorrencia;
     private String endereço;
     private String detalhesDaOcorrencia;
-    private Uri imagemURL;
+    private String imagemURL;
+    private double latitude;
+    private double longitude;
 
     public Denuncia() {
     }
@@ -39,11 +39,25 @@ public class Denuncia {
         this.detalhesDaOcorrencia = detalhesDaOcorrencia;
     }
 
-    public Uri getImagemURL() {
+    public String getImagemURL() {
         return imagemURL;
     }
 
-    public void setImagemURL(Uri imagemURL) {
+    public void setImagemURL(String imagemURL) {
         this.imagemURL = imagemURL;
+    }
+
+    public double getLatitude() { return latitude; }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
