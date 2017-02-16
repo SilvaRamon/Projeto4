@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">tabApp</string>
+    <string name="app_name">Denúncias</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="pagina1">Início</string>
@@ -16,8 +16,8 @@
     <string name="tipo_denuncia">Tipo de Ocorrência:</string>
     <string name="endereco">Endereço:</string>
     <string name="endereco_desc">Local da ocorrência</string>
-    <string name="detalhes">Detalhes:</string>
-    <string name="detalhes_desc">Insira aqui os detalhes da ocorrência</string>
+    <string name="detalhes">Detalhes da ocorrência:</string>
+    <string name="detalhes_desc">Digite os detalhes da ocorrência</string>
 
     <string-array name="selecao_ocorrencia">
         <item>Assalto</item>
@@ -29,7 +29,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="local_da_ocorr_ncia">Local da ocorrência</string>
-    <string name="anexar_foto">Anexar Foto</string>
+    <string name="anexar_foto">Enviar com foto</string>
     <string name="insira_aqui_os_detalhes_da_ocorr_ncia">Insira aqui os detalhes da ocorrência</string>
-    <string name="enviar_den_ncia">Enviar Denúncia</string>
+    <string name="enviar_den_ncia">Enviar sem foto</string>
+    <string name="enviar_localiza_o">Enviar Localização</string>
 </resources>

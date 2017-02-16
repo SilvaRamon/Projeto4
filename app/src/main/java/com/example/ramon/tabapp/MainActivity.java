@@ -1,7 +1,16 @@
 package com.example.ramon.tabapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,9 +24,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-    }
 
-    public void iniciaSpinner(){
-
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_action_home);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_school);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_call);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_info_outline);
     }
 
     public static class PlaceholderFragment extends Fragment {
@@ -54,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
         private Button enviar;
         private Button anexar_foto;
 
+        private DatabaseReference db;
+        private FirebaseHelper helper;
+
+        private double latitude;
+        private double longitude;
+
         private Denuncia denuncia;
+
+        private StorageReference mStorage;
 
         public PlaceholderFragment() {
         }
@@ -64,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
+
             return fragment;
         }
 
@@ -87,38 +111,80 @@ public class MainActivity extends AppCompatActivity {
 
                 anexar_foto = (Button) rootView.findViewById(R.id.id_foto);
 
+                db = FirebaseDatabase.getInstance().getReference();
+                helper = new FirebaseHelper(db);
+
+                mStorage = FirebaseStorage.getInstance().getReference();
+
+                denuncia = new Denuncia();
+
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                LocationListener locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+
+                };
+
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
                 enviar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DatabaseReference db;
-                        FirebaseHelper helper;
-
-                        db = FirebaseDatabase.getInstance().getReference();
-                        helper = new FirebaseHelper(db);
-
-                        denuncia = new Denuncia();
-
                         denuncia.setEndereço(endereco.getText().toString());
                         denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
                         denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
+                        denuncia.setLatitude(latitude);
+                        denuncia.setLongitude(longitude);
+
+                        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
 
                         helper.Save(denuncia);
+
+                        Toast.makeText(getActivity(), "DENÚNCIA ENVIADA COM SUCESSO!", Toast.LENGTH_LONG).show();
 
                         endereco.setText("");
                         detalhesDaOcorrencia.setText("");
                     }
                 });
 
-                /*anexar_foto.setOnClickListener(new View.OnClickListener() {
+                anexar_foto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        File file = getFile();
 
-                        camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                        denuncia = new Denuncia();
+
                         startActivityForResult(camera_intent, 1);
                     }
-                });*/
+                });
 
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -130,30 +196,52 @@ public class MainActivity extends AppCompatActivity {
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 View rootView = inflater.inflate(R.layout.fragment_pagina_sobre, container, false);
                 return rootView;
-            } else{
+            } else {
                 View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                /*TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-                textView.setText("Deu ruim");*/
                 return rootView;
             }
         }
 
-        /*private File getFile(){
-            File folder = new File("sdcard/appPol");
-
-            if(!folder.exists()){
-                folder.mkdir();
-            }
-
-            File imagem = new File(folder, "imagem.jpg");
-
-            return imagem;
-        }
-
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            String path = "sdcard/appPol/imagem.jpg";
-        }*/
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == 1 && resultCode == RESULT_OK) {
+                final Uri uri = data.getData();
+
+                StorageReference caminho = mStorage.child("Fotos").child(uri.getLastPathSegment());
+
+                caminho.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        denuncia.setEndereço(endereco.getText().toString());
+                        denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
+                        denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
+                        denuncia.setImagemURL(taskSnapshot.getDownloadUrl().toString());
+                        denuncia.setLatitude(latitude);
+                        denuncia.setLongitude(longitude);
+
+                        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
+
+                        helper.Save(denuncia);
+
+                        endereco.setText("");
+                        detalhesDaOcorrencia.setText("");
+                    }
+                });
+
+                Toast.makeText(getActivity(), "DENÚNCIA ENVIADA COM SUCESSO!", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -172,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
             return 4;
         }
 
-        @Override
+        /*@Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
@@ -185,6 +273,6 @@ public class MainActivity extends AppCompatActivity {
                     return "Sobre";
             }
             return null;
-        }
+        }*/
     }
 }
