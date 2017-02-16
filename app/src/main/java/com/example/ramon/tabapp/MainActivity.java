@@ -60,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_info_outline);
     }
 
-    public void iniciaSpinner() {
-
-    }
-
     public static class PlaceholderFragment extends Fragment {
         private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -75,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
         private DatabaseReference db;
         private FirebaseHelper helper;
+
+        private double latitude;
+        private double longitude;
 
         private Denuncia denuncia;
 
@@ -119,38 +118,42 @@ public class MainActivity extends AppCompatActivity {
 
                 denuncia = new Denuncia();
 
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                LocationListener locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+
+                };
+
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
                 enviar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-                        LocationListener locationListener = new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                denuncia.setLatitude(location.getLatitude());
-                                denuncia.setLongitude(location.getLongitude());
-                            }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
-                            }
-
-                        };
-
                         denuncia.setEndereço(endereco.getText().toString());
                         denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
                         denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
+                        denuncia.setLatitude(latitude);
+                        denuncia.setLongitude(longitude);
 
                         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             // TODO: Consider calling
@@ -162,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
                             // for ActivityCompat#requestPermissions for more details.
                             return;
                         }
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
                         helper.Save(denuncia);
 
@@ -179,45 +181,6 @@ public class MainActivity extends AppCompatActivity {
                         Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                         denuncia = new Denuncia();
-
-                        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-                        LocationListener locationListener = new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                denuncia.setLatitude(location.getLatitude());
-                                denuncia.setLongitude(location.getLongitude());
-                            }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
-                            }
-
-                        };
-
-                        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
-                            return;
-                        }
-
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
                         startActivityForResult(camera_intent, 1);
                     }
@@ -255,6 +218,19 @@ public class MainActivity extends AppCompatActivity {
                         denuncia.setDetalhesDaOcorrencia(detalhesDaOcorrencia.getText().toString());
                         denuncia.setTipoDeOcorrencia(spinner.getSelectedItem().toString());
                         denuncia.setImagemURL(taskSnapshot.getDownloadUrl().toString());
+                        denuncia.setLatitude(latitude);
+                        denuncia.setLongitude(longitude);
+
+                        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
 
                         helper.Save(denuncia);
 

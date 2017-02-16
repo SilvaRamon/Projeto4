@@ -21,18 +21,10 @@
             android:background="#0073ff">
         </FrameLayout>-->
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="163dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            app:srcCompat="@drawable/batalhao_app"
-            android:id="@+id/imageView"
-            tools:ignore="ContentDescription" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/tipo_denuncia"
             android:id="@+id/textView2"
